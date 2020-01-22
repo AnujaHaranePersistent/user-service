@@ -1,0 +1,11 @@
+spring:
+   application:
+     name: employee data service
+   datasource:
+     url: jdbc:mysql://localhost:3306/mykart_data
+     username: root
+     password: root
+   jpa:
+     properties.hibernate.dialect: org.hibernate.dialect.MySQLDialect
+server:
+    port: 5050
