@@ -1,6 +1,7 @@
 package com.mykart.controller.cart;
 
 import com.mykart.dto.ItemDTO;
+import com.mykart.exception.ResourceNotFound;
 import com.mykart.model.Cart;
 import com.mykart.model.User;
 import com.mykart.service.cart.CartService;
@@ -13,9 +14,14 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+/**
+ * @author anuja_harane
+ *
+ * CartController is responsible for cart related operations
+ *
+ */
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/v1/users")
 @Log4j2
 @Validated
 @Api(value = "Cart Data Service",
@@ -25,18 +31,48 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
+    /**
+     *    to get all the items from the cart with given user identifier
+     * @param user_id  Identifier of user
+     * @return      List of ItemDTO
+     */
     @GetMapping("/{user_id}/cart")
-    @ApiOperation(value = "Get list of Users", response = List.class)
+    @ApiOperation(value = "Get list of Items available in cart", response = List.class)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Suceess|OK"),
             @ApiResponse(code = 401, message = "not authorized!"),
             @ApiResponse(code = 403, message = "forbidden!!!"),
             @ApiResponse(code = 404, message = "not found!!!")})
-    public List<ItemDTO> getAllItems( @ApiParam(value = "User id", required = true) @PathVariable("user_id") @Identification int user_id) {
+    public List<Cart> getAllItems( @ApiParam(value = "User id", required = true) @PathVariable("user_id") @Identification int user_id) {
         log.debug("Executed CartController.getAllItems() to retrieve all Items of  Cart");
         return cartService.getAllItems(user_id);
     }
+
+    /**
+     *
+     * @param user_id   Identifier of user
+     * @param item_id      get specific Item with given Identifier
+     * @return       ItemDTO
+     * @throws ResourceNotFound   If Item with given identifier not found
+     */
+    @GetMapping("/{user_id}/cart/{item_id}")
+    @ApiOperation(value = "Get Item of cart", response = ItemDTO.class)
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Suceess|OK"),
+            @ApiResponse(code = 401, message = "not authorized!"),
+            @ApiResponse(code = 403, message = "forbidden!!!"),
+            @ApiResponse(code = 404, message = "not found!!!")})
+    public ItemDTO getItems( @ApiParam(value = "User id", required = true) @PathVariable("user_id") @Identification int user_id,@ApiParam(value = "item id", required = true) @PathVariable("item_id") int item_id) throws ResourceNotFound {
+        log.debug("Executed CartController.getItems() to retrieve specific Item of  Cart");
+        return cartService.getItemById(user_id,item_id);
+    }
+
+    /**
+     *
+     * @param user_id    Identifier of user
+     * @param cart       Cart object with item_id and quantity of item
+     * @return           Cart
+     */
     @PostMapping("/{user_id}/cart")
-    @ApiOperation(value = "Save User object into the database", response = Cart.class)
+    @ApiOperation(value = "Save Item object into Cart", response = Cart.class)
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Suceess|OK"),
             @ApiResponse(code = 401, message = "not authorized!"),
             @ApiResponse(code = 403, message = "forbidden!!!"),
@@ -46,8 +82,50 @@ public class CartController {
             @ApiParam(value = "Cart object", required = true) @RequestBody Cart cart)
     {
         log.debug("Executed CartController.addItemToCart(cart) to save Item to cart ");
-        System.out.println("arrived at cart controller");
+        //System.out.println("arrived at cart controller");
         return cartService.saveItem(cart,user_id);
     }
 
+    /**
+     *
+     * @param user_id  Identifier of User
+     * @param cart     Cart object with item_id and quantity
+     * @return      Cart
+     */
+    @PutMapping("/{user_id}/cart/update")
+    @ApiOperation(value = "Update cart object into the database", response = Cart.class)
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Suceess|OK"),
+            @ApiResponse(code = 401, message = "not authorized!"),
+            @ApiResponse(code = 403, message = "forbidden!!!"),
+            @ApiResponse(code = 404, message = "not found!!!")})
+    public Cart updateItemInCart(
+            @ApiParam(value = "User id", required = true) @PathVariable("user_id") @Identification int user_id,
+            @ApiParam(value = "Cart object", required = true) @RequestBody Cart cart)
+    {
+        log.debug("Executed CartController.updateItemInCart(cart) to update Item to cart ");
+      //  System.out.println("arrived at cart controller");
+        return cartService.updateItemQuantity(cart,user_id);
+    }
+
+    /**
+     *
+     * @param user_id  Identifier of user
+     * @param item_id    Identifier of Item to be deleted
+     * @return
+     * @throws ResourceNotFound
+     */
+    @DeleteMapping("/{user_id}/cart/delete/{item_id}")
+    @ApiOperation(value = "Delete cart object into the database", response = Cart.class)
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Suceess|OK"),
+            @ApiResponse(code = 401, message = "not authorized!"),
+            @ApiResponse(code = 403, message = "forbidden!!!"),
+            @ApiResponse(code = 404, message = "not found!!!")})
+    public String deleteItemInCart(
+            @ApiParam(value = "User id", required = true) @PathVariable("user_id") @Identification int user_id,
+            @ApiParam(value = "Item id", required = true) @PathVariable("item_id") int item_id) throws ResourceNotFound {
+        log.debug("Executed CartController.updateItemInCart(cart) to update Item to cart ");
+      //  System.out.println("arrived at cart controller");
+        return cartService.deleteItem(item_id);
+    }
 }
+

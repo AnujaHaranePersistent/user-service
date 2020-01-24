@@ -5,10 +5,11 @@ import com.mykart.model.User;
 import java.util.List;
 
 public interface UserService {
-    public List<User> getAllUsers();
+    public Iterable<User> getAllUsers(int page, int size);
     public User getUserById(int user_id);
     public User saveUser(User emp);
     public void deleteUser(User emp);
     public User updateUser(User emp);
- //   public List<User> findByManager(int mgr_id);
+   // public  User getUserByFirstNameAndLatName(String first_name,String last_name);
+
 }

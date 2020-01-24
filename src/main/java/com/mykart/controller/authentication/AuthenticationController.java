@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 @Api(value = "Authentication Service",
 description = "Generation and validation of token")
+@RequestMapping("/v1")
 public class AuthenticationController {
   @Autowired
   private AuthenticationManager authenticationManager;
@@ -49,12 +50,30 @@ public class AuthenticationController {
   @ApiResponses(value = {@ApiResponse(code = 200, message = "Suceess|OK"),
       @ApiResponse(code = 401, message = "not authorized!"),
       @ApiResponse(code = 403, message = "forbidden!!!")})
-@PostMapping("/login")
-  public ResponseEntity<?> createAuthenticationToken(@ApiParam(value = "Jwt Request Object", required = true)@RequestBody JwtRequest authenticationRequest)
+@PostMapping("/users/login")
+  public ResponseEntity<?> createAuthenticationTokenForUser(@ApiParam(value = "Jwt Request Object", required = true)@RequestBody JwtRequest authenticationRequest)
       throws Exception {
     authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
     final UserDetails userDetails =
         userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+    final String token = jwtTokenUtil.generateToken(userDetails);
+    return ResponseEntity.ok(new JwtResponse(token));
+  }
+  /**
+   * @param authenticationRequest jwtRequest with username and password
+   * @return return jwtResponse with token
+   * @throws Exception if username and password is not valid
+   */
+  @ApiOperation(value = "Create authentication token", response = JwtResponse.class)
+  @ApiResponses(value = {@ApiResponse(code = 200, message = "Suceess|OK"),
+          @ApiResponse(code = 401, message = "not authorized!"),
+          @ApiResponse(code = 403, message = "forbidden!!!")})
+  @PostMapping("/admin/login")
+  public ResponseEntity<?> createAuthenticationTokenForAdmin(@ApiParam(value = "Jwt Request Object", required = true)@RequestBody JwtRequest authenticationRequest)
+          throws Exception {
+    authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+    final UserDetails userDetails =
+            userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
     final String token = jwtTokenUtil.generateToken(userDetails);
     return ResponseEntity.ok(new JwtResponse(token));
   }
@@ -75,22 +94,6 @@ public class AuthenticationController {
     }
   }
 
-  /**
-   * @param user_id identifier of user
-   * @return return jwtRequest
-   * @throws ResourceNotFound if username and password is not found
-   */
-  @ApiOperation(value = "Get authentication details", response = JwtResponse.class)
-  @ApiResponses(value = {@ApiResponse(code = 200, message = "Suceess|OK"),
-          @ApiResponse(code = 401, message = "not authorized!"),
-          @ApiResponse(code = 403, message = "forbidden!!!")})
-  @GetMapping("/login/{user_id}")
-  public ResponseEntity<?> getAuthenticationDetails( @ApiParam(value = "User id", required = true) @PathVariable("user_id") @Identification int user_id)
-          throws ResourceNotFound {
-    Authentication auth=authenticationService.findById(user_id);
-
-    return ResponseEntity.ok(new JwtRequest(auth.getUsername(),auth.getPassword()));
-  }
 
 
 }

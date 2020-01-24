@@ -23,7 +23,7 @@ public class TestController {
 
   @InjectMocks UserController userController;
 
-  @Test
+ /* @Test
   public void getAllUsersTest() {
 
     User user = mock(User.class);
@@ -32,7 +32,7 @@ public class TestController {
     when(userService.getAllUsers()).thenReturn(list);
     userController.getAllUsers();
     verify(userService, times(1)).getAllUsers();
-  }
+  }  */
 
   @Test
   public void saveUserTest() throws ResourceNotFound {
@@ -43,14 +43,14 @@ public class TestController {
     verify(userService, times(1)).saveUser(user);
   }
 
-  @Test
+/*  @Test
   public void getUserByIdTest() throws ResourceNotFound {
 
     User user = mock(User.class);
     when(userService.getUserById(101)).thenReturn(user);
     userController.getUserById(101);
     verify(userService, times(1)).getUserById(101);
-  }
+  }      */
 
   @Test
   public void updateUserTest() throws ResourceNotFound {

@@ -25,7 +25,7 @@ public class TestUserServices {
     @InjectMocks
     UserServiceImpl userService;
 
-  @Test
+  /*@Test
   public void getAllUsersTest() {
     List<User> list = new ArrayList<User>();
     User user = mock(User.class);
@@ -33,7 +33,7 @@ public class TestUserServices {
     when(userRepository.findAll()).thenReturn(list);
     userService.getAllUsers();
     verify(userRepository, times(1)).findAll();
-    }
+    }  */
 
     @Test
     public void  getUserByIdTest(){

@@ -34,15 +34,15 @@ public class SwaggerConfiguration {
 		 aParameters.add(aParameterBuilder.build());
 		 return new Docket(DocumentationType.SWAGGER_2).select()
 	            .apis(RequestHandlerSelectors
-	                .basePackage("com.employee"))
+	                .basePackage("com.mykart"))
 	            .paths(PathSelectors.regex("/.*"))
 	            .build().apiInfo(apiEndPointsInfo())
 				 .globalOperationParameters(aParameters);
 	    }
 	 
 	 private ApiInfo apiEndPointsInfo() {
-	        return new ApiInfoBuilder().title("Employee Data Service")
-	            .description("Employee Data Service REST API")
+	        return new ApiInfoBuilder().title("Mykart User Data Service")
+	            .description("User Data Service REST API")
 	            .contact(new Contact("Anuja  Harane", null,null))
 	            .license("Apache 2.0")
 	            .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
