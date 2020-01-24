@@ -5,7 +5,7 @@
 
 ### 1. Clone the application
 ```bash
-https://github.com/AnujaHaranePersistent/mykart-user-service.git
+https://github.com/AnujaHaranePersistent/user-service.git
 ```
 
 ### 2. Create MYSQL database
